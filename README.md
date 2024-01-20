@@ -86,4 +86,47 @@ Restart rsyslog to apply the configuration changes:
 
 sudo systemctl restart rsyslog
 
+# Modify sshd_config:
+
+Edit the SSH daemon configuration file (/etc/ssh/sshd_config) and add the following two lines:
+
+sudo nano /etc/ssh/sshd_config
+
+SyslogFacility AUTHPRIV
+
+LogLevel INFO
+
+
+sudo systemctl restart sshd
+sudo systemctl restart rsyslog
+
+# Test Logging:
+
+Tail the new log file at /var/log/sshd.log and try logging in to generate logs:
+sudo tail -f /var/log/sshd.log
+
+
+
+5. Edit in Jail.local and restart fail2ban. [Other configurations in jail.local remains as previous]
+
+sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
+
+sudo cp /etc/fail2ban/fail2ban.conf /etc/fail2ban/fail2ban.local
+
+sudo nano /etc/fail2ban/jail.local
+
+[INCLUDES]
+
+before = paths-fedora.conf
+
+ensure backend is set to auto
+
+
+sudo systemctl restart fail2ban
+sudo systemctl status fail2ban
+sudo fail2ban-client status sshd
+
+**[WORKING]**
+
+
 
